@@ -1,8 +1,4 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-$(function () {
-  // TODO: Add a listener for click events on the save button. This code should
+// TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
   // function? How can DOM traversal be used to get the "hour-x" id of the
@@ -20,4 +16,43 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
-});
+
+let todayEl = $('#currentDay')
+let saveBtn = $('.saveBtn')
+let timeBlocksEl = $('.timeBlock')
+let localStorageData = []
+let today = dayjs().format('dddd, MMMM DD');
+let rightNow = dayjs().format('hh')
+
+function displayToday() {
+  todayEl.text(today);
+}
+
+function pastOrFuture(){
+  if(rightNow.isBefore(dayjs('9h 0m 0s a'))){
+    console.log('works')
+  }
+}
+
+function prefillEvents() { 
+  for(let i = 0; i < timeBlocksEl.length; i++){
+    let currentBlock = $(timeBlocksEl[i])
+    let savedEvent = localStorage.getItem(currentBlock.attr('id'))
+    currentBlock.children('.input').text(savedEvent)
+  }
+}
+
+function saveEvent(event){
+  thisHere = $(this).parent()
+  eventValue = thisHere.children('.input').val()
+  eventKey = thisHere.attr('id')
+  
+  localStorage.setItem(eventKey, eventValue)
+}
+
+displayToday()
+setInterval(displayToday,1000)
+prefillEvents()
+pastOrFuture()
+
+saveBtn.on('click', saveEvent)
